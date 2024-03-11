@@ -24,7 +24,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "types", "test", "scripts"],
-  "exclude": ["*.md"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "types", "test", "scripts", "vite.config.ts"],
+  "exclude": ["*.md"]
 }
