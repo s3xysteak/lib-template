@@ -9,14 +9,19 @@ import AutoImport from 'unplugin-auto-import/vite'
 import dts from 'vite-plugin-dts'
 
 // import pkg from './package.json'
+import {
+  supportAutoImportPlugin,
+  supportAutoImportDts
+} from './src/plugins/supportAutoImport'
 
 export default defineConfig({
   plugins: [
-    dts({ rollupTypes: true }),
     AutoImport({
       imports: ['vitest'],
       dts: 'types/auto-imports.d.ts'
-    })
+    }),
+    dts({ rollupTypes: true, afterBuild: supportAutoImportDts }),
+    supportAutoImportPlugin()
   ],
   build: {
     lib: {
