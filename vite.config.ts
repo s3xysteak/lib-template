@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import { fileURLToPath, URL } from 'node:url'
+import { URL, fileURLToPath } from 'node:url'
 
 import { defineConfig } from 'vite'
 import { configDefaults } from 'vitest/config'
@@ -10,26 +10,26 @@ import dts from 'vite-plugin-dts'
 
 // import pkg from './package.json'
 import {
+  supportAutoImportDts,
   supportAutoImportPlugin,
-  supportAutoImportDts
 } from './src/plugins/supportAutoImport'
 
 export default defineConfig({
   plugins: [
     AutoImport({
       imports: ['vitest'],
-      dts: 'types/auto-imports.d.ts'
+      dts: 'types/auto-imports.d.ts',
     }),
     dts({ rollupTypes: true, afterBuild: supportAutoImportDts }),
-    supportAutoImportPlugin()
+    supportAutoImportPlugin(),
   ],
   build: {
     lib: {
       formats: ['es', 'cjs', 'umd', 'iife'],
       entry: './src/index.ts',
       name: 'libTemplate',
-      fileName: 'index'
-    }
+      fileName: 'index',
+    },
     // rollupOptions: {
     //   external: Object.keys(pkg.dependencies || {})
     // }
@@ -40,13 +40,13 @@ export default defineConfig({
       ...configDefaults.exclude,
       'e2e/*',
       '**/public/**',
-      '**/.{vscode,svn}/**'
+      '**/.{vscode,svn}/**',
     ],
-    root: fileURLToPath(new URL('./', import.meta.url))
+    root: fileURLToPath(new URL('./', import.meta.url)),
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })

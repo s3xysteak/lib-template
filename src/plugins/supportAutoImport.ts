@@ -1,5 +1,6 @@
 import { join, parse } from 'node:path'
 import { readdirSync, writeFileSync } from 'node:fs'
+import * as process from 'node:process'
 import type { Plugin } from 'vite'
 import type { PluginOptions } from 'vite-plugin-dts'
 
@@ -12,7 +13,7 @@ const joinWithCwd = (path: string) => join(process.cwd(), path)
 
 const removeExtension = (filePath: string) => parse(filePath).name
 
-export const supportAutoImportPlugin = (): Plugin => {
+export function supportAutoImportPlugin(): Plugin {
   return {
     name: 'support-auto-import-plugin',
     apply: 'build',
@@ -33,21 +34,21 @@ export const supportAutoImportPlugin = (): Plugin => {
           }
         `
 
-        return '\n' + `export const autoImport = ${result};` + '\n' + code
+        return `\n` + `export const autoImport = ${result};` + `\n${code}`
       }
-    }
+    },
   }
 }
 
-export const supportAutoImportDts: PluginOptions['afterBuild'] = dtsMap => {
+export const supportAutoImportDts: PluginOptions['afterBuild'] = (dtsMap) => {
   const dirNameList = readdirSync(targetDir).filter(file =>
-    ignoreDirList.every(i => i !== file)
+    ignoreDirList.every(i => i !== file),
   )
   const resultArr = [...concatList, ...dirNameList]
-  const mapType = `Partial<Record<'${resultArr.join("'|'")}', string>>`
+  const mapType = `Partial<Record<'${resultArr.join('\'|\'')}', string>>`
   const result = `export declare const autoImport: (map?: ${mapType}) => { 'lib-template': (string | [string, string])[] };`
 
   const path = joinWithCwd('./dist/index.d.ts').replace(/\\/g, '/')
 
-  writeFileSync(path, dtsMap.get(path) + '\n' + result + '\n')
+  writeFileSync(path, `${dtsMap.get(path)}\n${result}\n`)
 }
