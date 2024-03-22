@@ -1,4 +1,5 @@
 import { defineBuildConfig } from 'unbuild'
+import ExportCollector from 'unplugin-export-collector/rollup'
 
 import alias from './alias'
 
@@ -14,4 +15,12 @@ export default defineBuildConfig({
     inlineDependencies: true,
   },
   alias,
+  hooks: {
+    'rollup:options': (_, options) => {
+      options.plugins = [
+        ...(options.plugins as any[]),
+        ExportCollector(),
+      ]
+    },
+  },
 })
